@@ -1,0 +1,72 @@
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:fillViewport="true">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="5dp"
+    tools:context=".MoviesActivity" >
+
+    <!-- @drawable/large_movie_poster sourced from
+         http://content8.flixster.com/movie/11/15/86/11158674_pro.jpg -->
+    <ImageView
+        android:id="@+id/ivPosterImage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:maxHeight="160dp"
+        android:scaleType="fitXY"
+        android:adjustViewBounds="true"
+        android:src="@drawable/ic_launcher" />
+
+
+    <TextView
+        android:id="@+id/tvTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignTop="@+id/ivPosterImage"
+        android:textStyle="bold"
+        android:layout_marginLeft="8dp"
+        android:layout_toRightOf="@+id/ivPosterImage"
+        android:text="The Dark Knight"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/tvCriticsScore"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/tvTitle"
+        android:layout_below="@+id/tvTitle"
+        android:layout_marginTop="5dp"
+        android:text="Critics Score: 93%"
+        android:textSize="14sp" />
+<Button
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:text="Star"
+    android:layout_below="@+id/tvCriticsScore"
+    android:layout_toEndOf="@id/ivPosterImage"
+    android:id="@+id/fav"/>
+
+    <TextView
+        android:id="@+id/overview"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="This is an excellent movie that has action and romance"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/ivPosterImage"
+        android:layout_alignParentStart="true" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/ll_detail"
+        android:orientation="vertical"
+        android:layout_below="@+id/overview">
+    </LinearLayout>
+
+
+</RelativeLayout>
+</ScrollView>
