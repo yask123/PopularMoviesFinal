@@ -152,7 +152,7 @@ public class MovieDetailFragment extends Fragment {
                         JSONObject item = jsonarray.getJSONObject(i);
                         final Button new_trailer = new Button(getContext());
                         final String vid_id = item.getString("key");
-                        new_trailer.setText("Trailer " + i + 1);
+                        new_trailer.setText("Trailer " + (i+1));
                         new_trailer.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View v) {

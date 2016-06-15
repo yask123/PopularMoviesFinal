@@ -2,8 +2,10 @@ package com.example.yask.popularmoviesfinal;
 
 
 import android.app.Activity;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,7 +33,8 @@ public class MovieListFragment extends Fragment {
     public  MoviesAdapter adapterMovie;
     public IMDBClient client;
     View rootView;
-
+    SharedPreferences mSettings;
+    SharedPreferences.Editor editor;
     private OnListItemSelectedListener listener;
 
 
@@ -76,11 +79,21 @@ public class MovieListFragment extends Fragment {
         switch (item.getItemId()) {
             case R.id.popular:
                 fetchMovies("popular");
+                editor = mSettings.edit();
+                editor.putString("sort_order","popular");
+                editor.apply();
                 return true;
             case R.id.top_rated:
                 fetchMovies("top_rated");
+                editor = mSettings.edit();
+                editor.putString("sort_order","top_rated");
+                editor.apply();
+                Log.e("YE",mSettings.getString("sort_order", "missing"));
                 return true;
             case  R.id.fav:
+                editor = mSettings.edit();
+                editor.putString("sort_order","fav");
+                editor.apply();
                 fetchMovies("fav");
                 return true;
             default:
@@ -105,7 +118,22 @@ public class MovieListFragment extends Fragment {
                 listener.onItemSelected(item);
             }
         });
-        fetchMovies("popular");
+        mSettings = getActivity().getSharedPreferences("Settings", 0);
+        String Psort = mSettings.getString("sort_order", "missing");
+        editor = mSettings.edit();
+        if (Psort.equals("missing")){
+            fetchMovies("popular");
+
+            editor.putString("sort_order","popular");
+            editor.apply();
+            Log.e("Test","Started Populer coz mussing");
+        }
+        else {
+            fetchMovies(Psort);
+            Log.e("Test","Started "+Psort);
+
+        }
+
         return  rootView;
 
     }
