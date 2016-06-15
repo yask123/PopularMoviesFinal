@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 public class IMDBClient {
 
-    private final String KEY = "05df3644ee3e75b407700ca976b07874";
+    private final String KEY = "";
     private AsyncHttpClient client;
 
     public IMDBClient() {
