@@ -1,6 +1,7 @@
 # Popular Movies
 
 Discover top trending movies 
+
 Optmized for tablets
 
 
@@ -11,4 +12,4 @@ Enter the API key [here](https://github.com/yask123/PopularMoviesFinal/blob/mast
 
 
 #### Mobile View
-<img src="http://i.imgur.com/ntQmbc3.jpg" height="30%" width="30%" />
+<img src="http://i.imgur.com/ntQmbc3.jpg" height="40%" width="40%" />
