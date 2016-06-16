@@ -12,4 +12,4 @@ Enter the API key [here](https://github.com/yask123/PopularMoviesFinal/blob/mast
 
 
 #### Mobile View
-<img src="http://i.imgur.com/ntQmbc3.jpg" height="40%" width="40%" />
+<img src="http://i.imgur.com/ntQmbc3.jpg" height="45%" width="45%" />
