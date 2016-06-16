@@ -4,6 +4,7 @@ package com.example.yask.popularmoviesfinal;
 import android.app.Activity;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,19 +31,30 @@ import cz.msebera.android.httpclient.Header;
  * A simple {@link Fragment} subclass.
  */
 public class MovieListFragment extends Fragment {
-    public  MoviesAdapter adapterMovie;
+    static final String SCROLL_INDEX = "index";
+    public MoviesAdapter adapterMovie;
     public IMDBClient client;
     View rootView;
     SharedPreferences mSettings;
     SharedPreferences.Editor editor;
+    Parcelable state;
+    GridView gvMovie;
+    int index;
     private OnListItemSelectedListener listener;
 
-
-
-
-    public interface OnListItemSelectedListener {
-        public void onItemSelected(Movie item);
+    public MovieListFragment() {
+        // Required empty public constructor
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState) {
+        super.onSaveInstanceState(savedInstanceState);
+        state = gvMovie.onSaveInstanceState();
+
+        savedInstanceState.putInt(SCROLL_INDEX, gvMovie.getFirstVisiblePosition());
+
+    }
+
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
@@ -55,14 +67,14 @@ public class MovieListFragment extends Fragment {
         }
     }
 
-
-    public MovieListFragment() {
-        // Required empty public constructor
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (savedInstanceState != null) {
+            // Restore value of members from saved state
+            index = savedInstanceState.getInt(SCROLL_INDEX);
+
+        }
         setHasOptionsMenu(true);//Make sure you have this line of code.
     }
 
@@ -80,19 +92,19 @@ public class MovieListFragment extends Fragment {
             case R.id.popular:
                 fetchMovies("popular");
                 editor = mSettings.edit();
-                editor.putString("sort_order","popular");
+                editor.putString("sort_order", "popular");
                 editor.apply();
                 return true;
             case R.id.top_rated:
                 fetchMovies("top_rated");
                 editor = mSettings.edit();
-                editor.putString("sort_order","top_rated");
+                editor.putString("sort_order", "top_rated");
                 editor.apply();
-                Log.e("YE",mSettings.getString("sort_order", "missing"));
+                Log.e("YE", mSettings.getString("sort_order", "missing"));
                 return true;
-            case  R.id.fav:
+            case R.id.fav:
                 editor = mSettings.edit();
-                editor.putString("sort_order","fav");
+                editor.putString("sort_order", "fav");
                 editor.apply();
                 fetchMovies("fav");
                 return true;
@@ -104,12 +116,12 @@ public class MovieListFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        rootView =  inflater.inflate(R.layout.fragment_movie_list, container, false);
+        rootView = inflater.inflate(R.layout.fragment_movie_list, container, false);
 
-        ArrayList<Movie>  temp = new ArrayList<Movie>();
+        ArrayList<Movie> temp = new ArrayList<Movie>();
 
-        adapterMovie = new MoviesAdapter(getActivity(),temp);
-        GridView gvMovie =(GridView) rootView.findViewById(R.id.gvMovie);
+        adapterMovie = new MoviesAdapter(getActivity(), temp);
+        gvMovie = (GridView) rootView.findViewById(R.id.gvMovie);
         gvMovie.setAdapter(adapterMovie);
         gvMovie.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -121,24 +133,26 @@ public class MovieListFragment extends Fragment {
         mSettings = getActivity().getSharedPreferences("Settings", 0);
         String Psort = mSettings.getString("sort_order", "missing");
         editor = mSettings.edit();
-        if (Psort.equals("missing")){
+
+
+        if (Psort.equals("missing")) {
             fetchMovies("popular");
 
-            editor.putString("sort_order","popular");
+            editor.putString("sort_order", "popular");
             editor.apply();
-            Log.e("Test","Started Populer coz mussing");
-        }
-        else {
+            Log.e("Test", "Started Populer coz mussing");
+        } else {
             fetchMovies(Psort);
-            Log.e("Test","Started "+Psort);
+            Log.e("Test", "Started " + Psort);
 
         }
 
-        return  rootView;
+
+        return rootView;
 
     }
 
-    private void fetchMovies(String order){
+    private void fetchMovies(String order) {
         adapterMovie.clear();
         adapterMovie.notifyDataSetChanged();
 
@@ -156,31 +170,44 @@ public class MovieListFragment extends Fragment {
                 adapterMovie.add(temp);
             }
             adapterMovie.notifyDataSetChanged();
-        }
-        else{
+            gvMovie.setSelection(index);
+
+        } else {
             client = new IMDBClient();
-            client.getMovies(order, new JsonHttpResponseHandler(){
+            client.getMovies(order, new JsonHttpResponseHandler() {
+                @Override
+                public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+                    super.onFailure(statusCode, headers, throwable, errorResponse);
+                    Log.e("Test", errorResponse.toString());
+                }
+
                 @Override
                 public void onSuccess(int statusCode, Header[] headers, JSONObject response) {
                     try {
                         JSONArray items = response.getJSONArray("results");
                         ArrayList<Movie> movie_response = Movie.fromJson(items);
-                        for(Movie each_movie: movie_response){
+                        for (Movie each_movie : movie_response) {
                             adapterMovie.add(each_movie);
                         }
 
-                    }
-                    catch (Exception e ){
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     adapterMovie.notifyDataSetChanged();
+                    gvMovie.setSelection(index);
+
                 }
             });
+
 
         }
 
 
+    }
 
+
+    public interface OnListItemSelectedListener {
+        void onItemSelected(Movie item);
     }
 
 }
